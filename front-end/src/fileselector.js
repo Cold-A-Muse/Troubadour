@@ -3,7 +3,6 @@ import createIExecContracts from "iexec-contracts-js-client";
 import EthJs from "ethjs";
 
 var extract = require("extract-zip");
-var fs = require("browserify-fs");
 var Web3 = require("web3");
 var web3 = window.web3;
 
