@@ -10,7 +10,7 @@ The application is currently in alpha so please be **careful** while using it. N
 - Have node installed (which can be found [here](https://nodejs.org/en/))
 - Have npm installed 
 - Have react installed (by running ```npm install react``` in your terminal)
-- Have the metamask plugin installed (which can be found [here](https://metamask.io/)) and a kovan wallet with some ETH and RLC in it
+- Have the metamask plugin installed (which can be found [here](https://metamask.io/)) and a kovan wallet with some ETH and RLC in it available
 - Work orders are available in the  [iexec marketplace](https://market.iex.ec/)
 
 Run the following command in both the front-end and back-end folders to install the dependecies of Troubadour:
@@ -32,8 +32,12 @@ node app.js
 # Running basic tasks
  
  1. Click the Browse… button in order to open a file select dialog on your local machine.
+ 
  2. Select a file of your desire. The file name should now be displayed in front of the Browse… button and a preview of the text should be displayed in the preview pane. **Note:** Troubadour currently only supports __.txt__ files. 
+ 
  3. Click the upload button and wait until a pay request pop-up by metamask appears.
- 4. Approve the payment and wait until the text file has been processed  **Note:** Processing the text file might take up to 15 minutes or longer depending on how fast the PoCo algorithm approves the computation. 
+ 
+ 4. Approve the payment and wait until the text file has been processed  **Note:** Processing the text file might take up to 15 minutes or longer depending on how fast the PoCo algorithm approves the computation. You can follow the progress of the work order [here](https://explorer.iex.ec/kovan)
+ 
  5. After the work has been processed a sign request pop-up by metamask appears. This sign request is necessary to access the results NLP pipeline. After the signing the message the extracted entitites should become available in their corresponding sections.  
 
