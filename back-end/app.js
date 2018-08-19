@@ -27,8 +27,8 @@ async function toFileShare(file) {
   console.log("upload command transfer.sh: ", command);
   const { stdout, stderr } = await exec(command, { maxBuffer: 1024 * 500 });
   console.log("uploadURL: ", stdout);
-  //return stdout;
-  return "https://transfer.sh/y7PBx/142d9d4662a95591ad13f36c203bf8ce";
+  return stdout;
+  //return "https://transfer.sh/y7PBx/142d9d4662a95591ad13f36c203bf8ce";
 }
 
 app.use(cors());
@@ -190,11 +190,7 @@ function NAFtoEntities(naf) {
 }
 
 // GET method route
-app.post("/docker_path", uploads.single("file"), async function(
-  req,
-  res,
-  next
-) {
+app.post("/docker_path", uploads.single("file"), async function(req, res, next) {
   console.log("requested file: ", req.file.path);
   const transferURL = await toFileShare(req.file)
     .then(fileURL => {
@@ -204,114 +200,7 @@ app.post("/docker_path", uploads.single("file"), async function(
   const result = { transferURL: transferURL };
   console.log("file URL to be sent to front-end: ", result);
   res.send(result);
-  /*extract('/home/daan/Desktop/Troubadour/front-end/test.zip' , { dir: '/home/daan/Desktop/Troubadour/front-end/Unzip'}, (err) => {
-    if(err) { 
-        console.log("ARCHIVE FAILED TO EXTRACT", err); 
-    } else {
-        var filePath = '/home/daan/Desktop/Troubadour/front-end/Unzip' + "/" + 'entities.txt';
-        fs.readFile(filePath, 'utf8', (err, data) => {
-          if(err) {
-            console.log('ERROR READING NAF FILE RECEIVED FROM DECENTRALIZED CLOUD');
-          } else {     
-            XMLtoJSON(data)
-            .then((naf) => {
-              return NAFtoEntities(naf);
-            }).then(function(splittedEntities){     
-              result = {
-                message:'Zip unzipped, Naf file read and entities extracted',
-                filename:req.file.filename,
-                splittedEntities: splittedEntities
-             };
-             console.log('Web server end result');
-             console.log(result);
-             res.send(result);
-            })
-            .catch(console.log.bind(console));
-          }
-        });
-      }
-    }); */
-});
 
-app.post("/file_upload", uploads.single("file"), function(req, res, next) {
-  // res.redirect('back'); <- van joey zodat je niet van je pagina afgaat
-  console.log("inside /file_upload:", JSON.stringify(req.file));
-  var file = __dirname + "/" + req.file.filename;
-
-  fs.readFile(req.file.path, function(err, data) {
-    console.log("inside readFile");
-    fs.writeFile(file, data, function(err) {
-      console.log("inside writeFile");
-      if (err) {
-        console.log(err);
-      } else {
-        console.log("start of processing raw text");
-        enhance(req.file)
-          .then(function(naf) {
-            console.log("raw text -> XML naf");
-            //console.log('XML ',JSON.stringify(naf));
-            return naf;
-          })
-          .then(function(naf) {
-            console.log("XML naf -> JSON naf");
-            //console.log('XML', naf)
-            var xml = new XMLParser().parseFromString(naf);
-            return xml;
-          })
-          .then(naf => {
-            console.log("naf->entities nu:", JSON.stringify(naf));
-            console.log("JSON naf -> entities");
-            var entities = naf.getElementsByTagName("entity");
-            //console.log('Extracted entities from naf: ', entities);
-            var extractedPER = [];
-            var extractedLOC = [];
-            var extractedORG = [];
-            for (var entity of entities) {
-              const name = entity.children[0].children[0].name;
-              const type = entity.attributes.type;
-              const termId =
-                entity.children[0].children[0].children[0].children[0]
-                  .attributes.id;
-              //const source = entity.children[0].children[0].children[1].children[0].attributes.reference
-              //const confidence = entity.children[0].children[0].children[1].children[0].attributes.confidence;
-              var entityDetails = [name, type, termId];
-              if (type === "LOC") {
-                console.log("Extracted location added to locations: ", name);
-                extractedLOC.push(entityDetails);
-              } else if (type === "PER") {
-                console.log("Extracted person added to persons: ", name);
-                extractedPER.push(entityDetails);
-              } else if (type === "ORG") {
-                console.log(
-                  "Extracted organization added to organizations: ",
-                  name
-                );
-                extractedORG.push(entityDetails);
-              } else {
-                console.log(
-                  "Entity does not belong to a current section so it has been skipped..."
-                );
-                continue;
-              }
-            }
-            return [extractedPER, extractedLOC, extractedORG];
-          })
-          .then(function(splittedEntities) {
-            result = {
-              message: "File uploaded successfully",
-              filename: req.file.filename,
-              splittedEntities: splittedEntities
-            };
-
-            console.log("Web server end result");
-            console.log(result);
-            res.send(result);
-          })
-          .catch(console.log.bind(console));
-      }
-      //res.end( JSON.stringify( result ) );
-    });
-  });
 });
 
 var server = app.listen(8081, function() {
